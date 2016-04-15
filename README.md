@@ -19,14 +19,14 @@ export function fetchSomeEntities() {
 
 Create a store with a reducer to track async actions. Wrap your own root reducer in order to allow the asyncReducer to block orphaned responses.
 ```javascript
-    import {middleware as asyncMiddleware, reducer as asyncReducer} from 'redux-track-async';
-    import {createStore, applyMiddleware} from 'redux';
+import {middleware as asyncMiddleware, reducer as asyncReducer} from 'redux-track-async';
+import {createStore, applyMiddleware} from 'redux';
 
-    const initialState = {};
-    const store = createStore(
-        asyncReducer(rootReducer),
-        initialState,
-        applyMiddleware(asyncMiddleware)
-    );
+const initialState = {};
+const store = createStore(
+    asyncReducer(rootReducer),
+    initialState,
+    applyMiddleware(asyncMiddleware)
+);
 ```
 
