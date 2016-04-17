@@ -85,3 +85,7 @@ response => {
 Type: `function`
 
 The reducer wraps the application root reducer. This allows it to block orphaned actions caused by async actions being fired after page shifts or other context shifts where the async state has been cleared.
+
+LICENSE
+=======
+MIT © Arosii A/S
