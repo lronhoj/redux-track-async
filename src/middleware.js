@@ -2,8 +2,6 @@ import uuid from 'uuid';
 export const ASYNC = Symbol('ASYNC');
 
 export default store => next => action => {
-
-
     const {[ASYNC]: options, ...tail} = action;
 
     // copy symbols that aren't copied with rest operator
@@ -15,28 +13,22 @@ export default store => next => action => {
         return next(action);
     }
 
-
-
-
     ['status', 'payload', 'error'].forEach(str => {
         if (typeof action[str] !== 'undefined') {
             throw new Error(`action.${str} must be undefined for async actions`);
         }
     });
 
-
     let {
         promise,
         parse = (response) => {
-            return new Promise((resolve) => {
-                if (response && typeof response.json === 'function' && response.headers && response.headers.get) {
-                    const contentType = response.headers.get("content-type");
-                    if(contentType && contentType.indexOf("application/json") !== -1) {
-                        return resolve(response.json());
-                    }
+            if (response && typeof response.json === 'function' && response.headers && response.headers.get) {
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return response.json();
                 }
-                return resolve(response);
-            })
+            }
+            return response;
         }
     } = options;
 
@@ -62,14 +54,14 @@ export default store => next => action => {
         })
         .then(result => {
             next(Object.assign({}, action, {
-                status: 'success',
+                status : 'success',
                 payload: result
             }));
         })
         .catch(err => {
             next(Object.assign({}, action, {
                 status: 'failure',
-                error: err
+                error : err
             }));
         })
         .then(() => {
@@ -77,5 +69,5 @@ export default store => next => action => {
                 status: 'completed'
             }));
         })
-    ;
+        ;
 };
