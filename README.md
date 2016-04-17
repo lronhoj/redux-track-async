@@ -88,4 +88,4 @@ The reducer wraps the application root reducer. This allows it to block orphaned
 
 LICENSE
 =======
-MIT © Arosii A/S
+MIT © [Arosii A/S](http://www.arosii.com/)
