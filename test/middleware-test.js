@@ -48,10 +48,13 @@ describe('Middleware', () => {
 
         const promise = middleware.default()(spy)({
             [middleware.ASYNC]: new Promise(resolve => resolve({
-                json: () => ["valid", "json"],
+                json   : () => ["valid", "json"],
                 headers: {
                     get: () => 'application/json'
-                }
+                },
+                ok        : true,
+                status    : 200,
+                statusText: 'OK'
             }))
         });
 
@@ -60,12 +63,43 @@ describe('Middleware', () => {
         return promise
             .then(() => {
                 expect(spy).to.have.been.calledThrice;
-                expect(spy).calledWith({payload: ["valid", "json"], status: 'success'});
+                expect(spy).calledWith({
+                    payload: ["valid", "json"],
+                    status: 'success'
+                });
                 expect(spy).calledWith({status: 'completed'});
                 done();
             })
             .catch(err => done(err))
-        ;
+            ;
+    });
+
+    it('should throw errors for fetch Response\'s !ok', (done) => {
+        const spy = sinon.spy();
+
+        const promise = middleware.default()(spy)({
+            [middleware.ASYNC]: new Promise(resolve => resolve({
+                json   : () => ["valid", "json"],
+                headers: {
+                    get: () => 'application/json'
+                },
+                ok        : false,
+                status    : 404,
+                statusText: 'NOT FOUND'
+            }))
+        });
+
+        expect(spy).calledWith({status: 'request'});
+        expect(spy).to.have.been.calledOnce;
+
+        return promise
+            .then(() => {
+                expect(spy).to.have.been.calledThrice;
+                expect(spy).calledWithMatch({status: 'failure'});
+                expect(spy).calledWith({status: 'completed'});
+                done();
+            })
+            .catch(err => done(err))
     });
 
 });

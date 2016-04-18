@@ -1,6 +1,14 @@
 import uuid from 'uuid';
 export const ASYNC = Symbol('ASYNC');
 
+function ApiError(status, statusText) {
+    this.name = 'ApiError';
+    this.message = `${status} - ${statusText}`;
+    this.stack = (new Error()).stack;
+}
+ApiError.prototype = Object.create(Error.prototype);
+ApiError.prototype.constructor = 'ApiError';
+
 export default store => next => action => {
     const {[ASYNC]: options, ...tail} = action;
 
@@ -22,7 +30,12 @@ export default store => next => action => {
     let {
         promise,
         parse = (response) => {
+            // detect if response is a Response (or shim)
             if (response && typeof response.json === 'function' && response.headers && response.headers.get) {
+                if (response.ok === false) {
+                    throw new ApiError(response.status, response.statusText);
+                }
+
                 const contentType = response.headers.get("content-type");
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     return response.json();
