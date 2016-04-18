@@ -1,5 +1,6 @@
 "use strict";
 const uuid = require('uuid');
+const actions = require('../lib/actions.js');
 const middleware = require('../lib/middleware.js');
 const reducer = require('../lib/reducer.js').default;
 const chai = require('chai');
@@ -131,6 +132,50 @@ describe('Reducer', () => {
         expect(spy).to.not.have.been.calledWith({}, {status: 'failure'});
         expect(spy).to.have.been.calledWith({}, {status: 'completed'});
         expect(spy.callCount).to.equal(2);
-    })
+    });
+
+    it('should clear async a requests state on clear request action', () => {
+        const spy = sinon.spy((state, action) => state || {});
+        const store = createStore(reducer(spy), {
+            __async       : {
+                1: true,
+                2: false
+            },
+            untouchedState: {foo: 'bar'}
+        });
+
+        const promise = store.dispatch({
+            id  : 1,
+            type: actions.CLEAR_PENDING_REQUEST
+        });
+
+        expect(store.getState()).to.deep.equal({
+            __async       : {
+                1: false,
+                2: false
+            },
+            untouchedState: {foo: 'bar'}
+        });
+    });
+
+    it('should clear async state on clear action', () => {
+        const spy = sinon.spy((state, action) => state || {});
+        const store = createStore(reducer(spy), {
+            __async       : {
+                1: true,
+                2: false
+            },
+            untouchedState: {foo: 'bar'}
+        });
+
+        const promise = store.dispatch({
+            type: actions.CLEAR_PENDING_REQUESTS
+        });
+
+        expect(store.getState()).to.deep.equal({
+            __async       : {},
+            untouchedState: {foo: 'bar'}
+        });
+    });
 
 });

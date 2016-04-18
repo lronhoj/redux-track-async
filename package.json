@@ -1,6 +1,6 @@
 {
   "name": "redux-track-async",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "A lib for tracking pending async requests. Exposes middleware & a reducer",
   "main": "index.js",
   "scripts": {

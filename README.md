@@ -137,6 +137,14 @@ Type: `function`
 
 The reducer wraps the application root reducer. This allows it to block orphaned actions caused by async actions being fired after page shifts or other context shifts where the async state has been cleared.
 
+## actions
+
+#### clearPendingRequests()
+Takes no arguments and causes reducer to clear it's state of pending requests. All pending requests will be orphans and `success|failure` actions will be blocked from the rootReducer. Only the `completed` action will be fired. The `completed` action is fired to allow other reducers to remove loading states for pending requests.
+
+#### clearPendingRequest(id)
+Takes a `uuid` of an async request and removes it from the async state. Like `clearPendingRequests()` it causes the `success|failure` actions to be blocked from the rootReducer. Only the `completed` action will be fired. The `completed` action is fired to allow other reducers to remove loading state for the pending request.
+
 LICENSE
 =======
 MIT © [Arosii A/S](http://www.arosii.com/)
