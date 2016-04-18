@@ -70,6 +70,9 @@ Default: returns `response.json()` if the result is a `Response`
 ```javascript
 response => {
     if (response && typeof response.json === 'function' && response.headers && response.headers.get) {
+        if (response.ok === false) {
+            throw new ApiError(response.status, response.statusText);
+        }
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") !== -1) {
             return response.json();
