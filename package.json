@@ -1,6 +1,6 @@
 {
   "name": "redux-track-async",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A lib for tracking pending async requests. Exposes middleware & a reducer",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,10 @@
   ],
   "author": "Lars Rønhøj <larsronhoj@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url": "https://github.com/lronhoj/redux-track-async.git"
+  },
   "devDependencies": {
     "babel-cli": "^6.7.5",
     "babel-preset-es2015": "^6.6.0",
