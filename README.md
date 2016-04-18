@@ -54,8 +54,8 @@ Type: `Symbol`
 
 A constant which is used as an attribute of dispatched actions to signal middleware.
 
-## middleware action
-```
+## middleware consumed actions
+```javascript
 action[ASYNC]: options || promise
 ```
 
@@ -78,6 +78,57 @@ response => {
     return response;
 }
 ```
+
+## middleware produced actions
+The middleware produces a series of actions for each async actions it consumes.
+The status attribute changes througout the series. `request => success|failure => completed`. Request and completed actions are always produced. Success or failure actions are produced depending on wether the promise is `fulfilled` or `rejected`.
+
+#### Request action
+```javascript
+{
+  "status": "request",
+  [ASYNC]: {
+    "id": "<generated uuid>"
+  },
+  { other attributes }
+}
+```
+
+#### Success action
+```javascript
+{
+  "status": "success",
+  [ASYNC]: {
+    "id": "<generated uuid>"
+  },
+  "payload": result,
+  { other attributes }
+}
+```
+
+#### Failure action
+```javascript
+{
+  "status": "failure",
+  [ASYNC]: {
+    "id": "<generated uuid>"
+  },
+  "error": error,
+  { other attributes }
+}
+```
+
+#### Completed action
+```javascript
+{
+  "status": "completed",
+  [ASYNC]: {
+    "id": "<generated uuid>"
+  },
+  { other attributes }
+}
+```
+
 
 ## reducer(rootReducer)
 
