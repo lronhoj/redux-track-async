@@ -1,9 +1,10 @@
 import uuid from 'uuid';
 export const ASYNC = Symbol('ASYNC');
 
-function ApiError(status, statusText) {
+function ApiError(status, statusText, payload) {
     this.name = 'ApiError';
     this.message = `${status} - ${statusText}`;
+    this.payload = payload;
     this.stack = (new Error()).stack;
 }
 ApiError.prototype = Object.create(Error.prototype);
@@ -32,13 +33,24 @@ export default store => next => action => {
         parse = (response) => {
             // detect if response is a Response (or shim)
             if (response && typeof response.json === 'function' && response.headers && response.headers.get) {
-                if (response.ok === false) {
-                    throw new ApiError(response.status, response.statusText);
-                }
 
+                // handle json responses
                 const contentType = response.headers.get("content-type");
                 if (contentType && contentType.indexOf("application/json") !== -1) {
-                    return response.json();
+                    return response.json()
+                        .then(result => {
+                            if (response.ok === false) {
+                                throw new ApiError(response.status, response.statusText, result);
+                            }
+                            return result;
+                        });
+                }
+
+                // handle other content-types
+                if (response.ok === false) {
+                    throw new ApiError(response.status, response.statusText);
+                } else {
+                    throw new ApiError(response.status, 'Content-Type: ' + response.headers.get("content-type"));
                 }
             }
             return response;
