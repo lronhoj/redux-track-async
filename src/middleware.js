@@ -49,8 +49,6 @@ export default store => next => action => {
                 // handle other content-types
                 if (response.ok === false) {
                     throw new ApiError(response.status, response.statusText);
-                } else {
-                    throw new ApiError(response.status, 'Content-Type: ' + response.headers.get("content-type"));
                 }
             }
             return response;
@@ -82,8 +80,7 @@ export default store => next => action => {
                 status : 'success',
                 payload: result
             }));
-        })
-        .catch(err => {
+        }, err => {
             next(Object.assign({}, action, {
                 status: 'failure',
                 error : err

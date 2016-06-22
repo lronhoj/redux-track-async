@@ -1,5 +1,9 @@
+#### 1.1.4
+ - default parse function produced too many errors. An error is no longer thrown when content type != json.
+ - it is no longer possible for success and failure actions to be produced when success action throws an error.
+
 #### 1.1.3
- - default parse function now attaches json payload to ApiErrors produced if response.ok === false
+ - default parse function now attaches json payload to ApiErrors produced if response.ok === false.
 
 #### 1.1.0
- - default parse function now throws errors when response.ok === false
+ - default parse function now throws errors when response.ok === false.
